@@ -46,7 +46,7 @@ class SportsOracles():
         src = result.content
         soup = BeautifulSoup(src, 'lxml')
         madden1 = []
-        substrings = ["diamond", "amethyst", "ruby", "sapphire", "emerald", "gold", 
+        substrings = ["diamond", "amethyst", "ruby", "sapphire", "emerald", "gold",
         "silver", "bronze", "dark-matter", "opal", "pinkdiamond"]
         for td_tag in soup.find_all('td'):
             span_tag = td_tag.find('span')
@@ -78,8 +78,8 @@ class SportsOracles():
                     end = temp.find('<', start)
                     pos = temp[start:end]
                     if not pos.find(" "):
-                        # positions = {"LE": "DE", "RE": "DE", 
-                        # "LT": "OT", "RT": "OT", "LG": "OG", "RG": "OG", "ROLB": "OLB", 
+                        # positions = {"LE": "DE", "RE": "DE",
+                        # "LT": "OT", "RT": "OT", "LG": "OG", "RG": "OG", "ROLB": "OLB",
                         # "LOLB": "OLB"}
                         # pos2 = positions.get(pos, pos)
                         if "LE" in pos:
@@ -135,8 +135,8 @@ class SportsOracles():
             except NoSuchElementException:
                 # print("Overall Not Found")
                 element6 = "N/A"
-        return element5, element6 
-    def SpotracBackup3(self, str, team): #go to website link when googling since it'd be hard 
+        return element5, element6
+    def SpotracBackup3(self, str, team): #go to website link when googling since it'd be hard
         driver = webdriver.Chrome('./chromedriver')
         url = 'https://www.spotrac.com/nfl/'
         driver.get(url)
@@ -232,7 +232,7 @@ class SportsOracles():
 
                         # Initialize a variable to store the index of the word "average"
                     average_index = None
-                    try:                         
+                    try:
                         # Iterate through the words in the paragraph
                         for i, word in enumerate(words):
                             if word.lower() == "average":
@@ -263,13 +263,13 @@ class SportsOracles():
     #     print("1")
     #     salary = "N/A"
     #     df = pd.read_excel('spotrac1.xlsx', engine = 'openpyxl')
-        
+
     #     # find the salary for the given name and team
     #     try:
     #         # result = df[(df['name'].str.find(name) != -1) & (df['team'] == team)]
     #         wb = openpyxl.load_workbook('spotrac1.xlsx')
     #         sheet = wb['Sheet1']
-    
+
     #         for row in sheet.iter_rows(values_only=True):
     #             if str in row[0] and team in row[1]:
     #                 salary = row[2]
@@ -297,7 +297,7 @@ class SportsOracles():
 
             except:
                 pass
-        names = [] 
+        names = []
         for h3_tag in soup.find_all('h3'):
             a_tag = h3_tag.find('a')
             try:
@@ -309,7 +309,7 @@ class SportsOracles():
                     names.append(temp3)
 
             except:
-                pass   
+                pass
         print(names)
         print(salaries)
         return names, salaries
@@ -369,10 +369,10 @@ class SportsOracles():
         return element6
     def PositionsSal(self, str):
         str1 = str.replace(" ", "")
-        positionsSalaries = {"QB": "$5,740,484", "HB": "$1,771,731", "FB": "$1,266,088", 
-        "WR": "$2,390,355", "TE": "$1,983,261", "OT": "$3,536,357", "OG": "$2,451,945", 
-        "C": "$2,558,048", "DE": "$3,198,393", "DT": "$2,991,040", "OLB": "$2,782,424", 
-        "MLB": "$3,350,875", "CB": "$2,206,489", "FS": "$3,548,345", "SS": "$3,237,867", 
+        positionsSalaries = {"QB": "$5,740,484", "HB": "$1,771,731", "FB": "$1,266,088",
+        "WR": "$2,390,355", "TE": "$1,983,261", "OT": "$3,536,357", "OG": "$2,451,945",
+        "C": "$2,558,048", "DE": "$3,198,393", "DT": "$2,991,040", "OLB": "$2,782,424",
+        "MLB": "$3,350,875", "CB": "$2,206,489", "FS": "$3,548,345", "SS": "$3,237,867",
         "K": "$1,933,002", "P": "$1,517,049", "LS": "$949,060"}
         salary = positionsSalaries.get(str1, "N/A")
         # print(salary)
@@ -464,23 +464,23 @@ class SportsOracles():
         for temp in SportsOracles().names(teamSite):
             print(temp)
             time1 = time.perf_counter()
-            # age, overall = SportsOracles().PFF(temp, team)
-            PFRoverall = SportsOracles().PFR(temp, team)
+            age, overall = SportsOracles().PFF(temp, team) #blank when testing others
+            PFRoverall = SportsOracles().PFR(temp, team) #blank when testing others
             time2 = time.perf_counter()
             time3 = time2-time1
             print(time3, " sec")
             ARIPlayers.append(temp)
             # ARIMadden.append(temp)
             # ARIPlayerAge.append(temp)
-            # ARIPlayerAvSal.append(temp)        
+            # ARIPlayerAvSal.append(temp)
             # ARIPFFRatings.append(temp)
             # ARIPosition.append(temp)
-            # ARIPFFRatings.append(overall)
-            # ARIPlayerAge.append(age)
-            ARIPFFRatings.append("0")
-            ARIPlayerAge.append("0")
+            ARIPFFRatings.append(overall)  #blank when testing others
+            ARIPlayerAge.append(age) #blank when testing others
+            # ARIPFFRatings.append("0") #use when testing others
+            # ARIPlayerAge.append("0") #use when testing others
             ARIPFRRatings.append(PFRoverall)
-        ARISpotracPlayers, ARISpotracSalaries = SportsOracles().SpotracList(teamSpot)
+        ARISpotracPlayers, ARISpotracSalaries = SportsOracles().SpotracList(teamSpot) #blank when testing others
         ARISalaries = [0 for i in range(len(ARIPlayers))]
         counter1 = 0
         for temp3 in ARISpotracPlayers:
@@ -523,14 +523,14 @@ class SportsOracles():
         print(ARIPFFRatings)
         print(ARIPlayerAge)
         print(ARIPosition)
-        print(ARIPlayerAvSal) 
+        print(ARIPlayerAvSal)
         print(ARIMadden)
         print(ARISalaries)
         print(ARISpotracPlayers)
         print(ARISpotracSalaries)
-        # print(length1 + " " + length2  + " " + 
+        # print(length1 + " " + length2  + " " +
         # length3  + " " + length4  + " " + length5  + " " + length6)
-        SportsOracles().ExcelSheet(length1, ARIPosition, ARIPlayers, ARIPlayerAvSal, 
+        SportsOracles().ExcelSheet(length1, ARIPosition, ARIPlayers, ARIPlayerAvSal,
         ARIPlayerAge, ARIMadden, ARIPFFRatings, ARISalaries, team, ARIPFRRatings)
 def main():
     team1 = "https://www.maddenratings.com/teams/arizona-cardinals"
@@ -597,7 +597,7 @@ def main():
     teamSpot31 = "https://www.spotrac.com/nfl/rankings/average/tennessee-titans/"
     team32 = "https://www.maddenratings.com/teams/washington-commanders"
     teamSpot32 = "https://www.spotrac.com/nfl/rankings/average/washington-commanders/"
-    
+
     ARI = "ARI"
     ATL = 'ATL'
     BAL = 'BAL'
@@ -663,81 +663,5 @@ def main():
     SportsOracles.RunLoops(team31, teamSpot31, TEN)
     SportsOracles.RunLoops(team32, teamSpot32, WAS)
 
-    # ARIPlayers = []
-    # ARIPFFRatings = []
-    # ARIPlayerAge = []
-    # ARIPlayerAvSal = []
-    # ARIPosition = []
-    # ARIMadden = []
-    # ARISpotracPlayers = []
-    # ARISpotracSalaries = []
-    # # ARISalaries = []
-    # for temp in SportsOracles().names(team1):
-    #     print(temp)
-    #     time1 = time.perf_counter()
-    #     age, overall = SportsOracles().PFF(temp, ARI)
-    #     time2 = time.perf_counter()
-    #     time3 = time2-time1
-    #     print(time3, " sec")
-    #     ARIPlayers.append(temp)
-    #     # ARIMadden.append(temp)
-    #     # ARIPlayerAge.append(temp)
-    #     # ARIPlayerAvSal.append(temp)        
-    #     # ARIPFFRatings.append(temp)
-    #     # ARIPosition.append(temp)
-    #     ARIPFFRatings.append(overall)
-    #     ARIPlayerAge.append(age)
-    # ARISpotracPlayers, ARISpotracSalaries = SportsOracles().SpotracList(teamSpot1)
-    # ARISalaries = [0 for i in range(len(ARIPlayers))]
-    # counter1 = 0
-    # for temp3 in ARISpotracPlayers:
-    #     counter2 = 0
-    #     # trans1 = temp3.translate ({ord(c): "" for c in ",:.`'1234567890-"})
-    #     # trans2 = temp3.translate ({ord(c): " " for c in ",:.`'1234567890-"})
-    #     trans3 = temp3.translate ({ord(c): "" for c in ",:.`'1234567890-"}).translate ({ord(c): "" for c in " "}).replace("Jr", "").replace("II", "").replace("III", "").replace("IV", "").lower()
-
-    #     for temp5 in range(len(ARIPlayers)):
-    #         temp6 = ARIPlayers[counter2]
-    #         transMad1 = temp6.translate ({ord(c): "" for c in ",:.`'1234567890-"}).translate ({ord(c): "" for c in " "}).replace("Jr", "").replace("II", "").replace("III", "").replace("IV", "").lower()
-    #         if temp3 in ARIPlayers[counter2] or trans3 in temp6:
-    #             ARISalaries[counter2] = ARISpotracSalaries[counter1]
-    #         counter2 += 1
-    #     counter1 += 1
-    # counter3 = 0
-    # for temp6 in ARISalaries:
-    #     print(counter3)
-    #     if temp6 == 0:
-    #         ARISalaries[counter3] = SportsOracles().SpotracBackup(ARIPlayers[counter3], ARI)
-    #     counter3 += 1
-    # for temp1 in SportsOracles().Position(team1):
-    #     AvSal = SportsOracles().PositionsSal(temp1)
-    #     ARIPlayerAvSal.append(AvSal)
-    #     # print(temp1)
-    #     ARIPosition.append(temp1)
-    # for temp2 in SportsOracles().madden(team1):
-    #     # print(temp2)
-    #     ARIMadden.append(temp2)
-    # length1 = len(ARIPlayers)
-    # length2 = len(ARIPFFRatings)
-    # length3 = len(ARIPlayerAge)
-    # length4 = len(ARIPosition)
-    # length5 = len(ARIPlayerAvSal)
-    # length6 = len(ARIMadden)
-    # length7 = len(ARISalaries)
-    # length8 = len(ARISpotracPlayers)
-    # length9 = len(ARISpotracSalaries)
-    # print(ARIPlayers)
-    # print(ARIPFFRatings)
-    # print(ARIPlayerAge)
-    # print(ARIPosition)
-    # print(ARIPlayerAvSal) 
-    # print(ARIMadden)
-    # print(ARISalaries)
-    # print(ARISpotracPlayers)
-    # print(ARISpotracSalaries)
-    # # print(length1 + " " + length2  + " " + 
-    # # length3  + " " + length4  + " " + length5  + " " + length6)
-    # SportsOracles().ExcelSheet(length1, ARIPosition, ARIPlayers, ARIPlayerAvSal, 
-    # ARIPlayerAge, ARIMadden, ARIPFFRatings, ARISalaries, ARI)
 if __name__ == "__main__":
     main()
