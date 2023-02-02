@@ -313,32 +313,6 @@ class SportsOracles():
         print(names)
         print(salaries)
         return names, salaries
-    # def PFR(self, str, team):
-    #     driver = webdriver.Chrome('./chromedriver')
-    #     url = 'https://www.google.com/'
-    #     driver.get(url)
-    #     element1 = driver.find_element(By.NAME, "q")
-    #     search = "PFR " + str + " " + team
-    #     element1.send_keys(search)
-    #     element1.send_keys(Keys.RETURN)
-    #     link = driver.find_elements(By.CSS_SELECTOR, "div#rso > div:nth-of-type(1) > .Ww4FFb.g.tF2Cxc.vt6azd  .UK95Uc.Z26q7c.jGGQ5e .DKV0Md.LC20lb.MBeuO")
-    #     if not link:
-    #         # print("NOT FOUND **")
-    #         element5 = "N/A"
-    #         element6 = "N/A"
-    #     else:
-    #         element2 = driver.find_element(By.CSS_SELECTOR, "div#rso > div:nth-of-type(1) > .Ww4FFb.g.tF2Cxc.vt6azd  .UK95Uc.Z26q7c.jGGQ5e .DKV0Md.LC20lb.MBeuO").click()
-    #         driver.maximize_window()
-    #         try:
-    #             PFFOvrLink = driver.find_element(By.CSS_SELECTOR, "table#passing > tbody > tr:nth-of-type(6) > td:nth-of-type(31)")
-    #             element6 = PFFOvrLink.text
-    #             # print("PFF: " + element6)
-    #         except NoSuchElementException:
-    #             # print("Overall Not Found")
-    #             element6 = "N/A"
-    #         print("success")
-    #     return element5, element6
-
     def PFR(self, str, team):
 
         driver = webdriver.Chrome('./chromedriver')
@@ -357,8 +331,6 @@ class SportsOracles():
             try:
                 PFROvrLink = driver.find_elements(By.CSS_SELECTOR, '[data-stat="av"]')
                 length = len(PFROvrLink)
-                # for element in PFFOvrLink:
-                #     print(element.text)
                 try:
                     element6 = PFROvrLink[length-2].text
                 except:
@@ -380,7 +352,6 @@ class SportsOracles():
     def ExcelSheet(self, length, positions, names, positionsSal, age, madden, PFF, salaries, team,  PFR):
         workbook = xlsxwriter.Workbook(team + '.xlsx') #the rest is making an excel sheet
         worksheet = workbook.add_worksheet()
-
         # Widen the first column to make the text clearer.
         worksheet.set_column('A:A', 12.5)
         worksheet.set_column('B:B', 7.5)
@@ -409,7 +380,6 @@ class SportsOracles():
         format.set_font_size(12)
         format.set_align('center')
         format.set_align('vcenter')
-
         worksheet.write('A1', 'Team', format)
         worksheet.write('B1', 'Position', format)
         worksheet.write('C1', 'Player', format)
@@ -448,7 +418,6 @@ class SportsOracles():
             worksheet.write(i+1, 13, "=(M"  + j + "*((L"  + j + "-63)/5.45))+M" + j, format)
             worksheet.write(i+1, 14, "=(N" + j + "-D" + j + ")", format)
             worksheet.write(i+1, 15, '=IF(O' + j + '<(-3000000), "Overpaid", "")', format)
-
         workbook.close()
     def RunLoops(teamSite, teamSpot, team):
         ARIPlayers = []
@@ -460,7 +429,6 @@ class SportsOracles():
         ARISpotracPlayers = []
         ARISpotracSalaries = []
         ARIPFRRatings = []
-        # ARISalaries = []
         for temp in SportsOracles().names(teamSite):
             print(temp)
             time1 = time.perf_counter()
@@ -485,14 +453,12 @@ class SportsOracles():
         counter1 = 0
         for temp3 in ARISpotracPlayers:
             counter2 = 0
-            # trans1 = temp3.translate ({ord(c): "" for c in ",:.`'1234567890-"})
-            # trans2 = temp3.translate ({ord(c): " " for c in ",:.`'1234567890-"})
             trans3 = temp3.translate ({ord(c): "" for c in ",:.`'1234567890-"}).translate ({ord(c): "" for c in " "}).replace("Jr", "").replace("II", "").replace("III", "").replace("IV", "").lower()
 
             for temp5 in range(len(ARIPlayers)):
                 temp6 = ARIPlayers[counter2]
                 transMad1 = temp6.translate ({ord(c): "" for c in ",:.`'1234567890-"}).translate ({ord(c): "" for c in " "}).replace("Jr", "").replace("II", "").replace("III", "").replace("IV", "").lower()
-                if temp3 in ARIPlayers[counter2] or trans3 in temp6:
+                if temp3 in ARIPlayers[counter2] or trans3 in temp6 or trans3 in transMad1:
                     ARISalaries[counter2] = ARISpotracSalaries[counter1]
                 counter2 += 1
             counter1 += 1
