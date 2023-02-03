@@ -58,4 +58,14 @@ Name, Position, Position's Average Salary, Age, Madden Rating, PFF Rating, Playe
 - an excel sheet is formatted and the data found was all put into lists to log into this excel sheet (should also log them into a Json file for future editing)
 
 EFFICIENCY:
+Team: 100% given the madden site is fully updated
 Name: 100% given the madden site is fully updated
+Pos: <100% given the madden site is fully updated
+Madden Ovr: 100% given the madden site is fully updated
+Sal: 83.32501%
+Age: 85.47179%
+PFF: 85.42187% hard to gauge b/c many players haven't played enough snaps to gain a PFF rating
+PFR: <90.15990% could be wrong #
+
+
+
