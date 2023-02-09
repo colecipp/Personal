@@ -78,10 +78,6 @@ class SportsOracles():
                     end = temp.find('<', start)
                     pos = temp[start:end]
                     if not pos.find(" "):
-                        # positions = {"LE": "DE", "RE": "DE",
-                        # "LT": "OT", "RT": "OT", "LG": "OG", "RG": "OG", "ROLB": "OLB",
-                        # "LOLB": "OLB"}
-                        # pos2 = positions.get(pos, pos)
                         if "LE" in pos:
                             pos = "DE"
                         elif "RE" in pos:
@@ -150,21 +146,6 @@ class SportsOracles():
             element1 = SportsOracles().SpotracBackup1(str, team)
         else:
             element1 = link.text
-        # driver = webdriver.Chrome('./chromedriver')
-        # url = 'google.com'
-        # driver.get(url)
-        # driver.maximize_window()
-        # element1 = driver.find_element(By.NAME, "q")
-        # search =  team + "NFL spotrac contract"
-        # element1.send_keys(search)
-        # element1.send_keys(Keys.RETURN)
-        # link = driver.find_elements(By.CSS_SELECTOR, "div:nth-of-type(2) > .Ww4FFb.g.tF2Cxc.vt6azd  .UK95Uc.Z26q7c.jGGQ5e .DKV0Md.LC20lb.MBeuO")
-        # if not link:
-        #     element1 = SportsOracles().SpotracBackup2(str, team)
-        # else:
-        #     element1 = link.text
-        # print(element1)
-        # return element1
         string = "Didn't Work"
         print(string)
         return string
@@ -197,12 +178,25 @@ class SportsOracles():
         search = str
         element1.send_keys(search)
         element1.send_keys(Keys.RETURN)
-        print("7")
-        try:
+        print("7") 
+        link = driver.find_elements(By.ClassName, "playerValue")
+        if not link:
+            close = driver.find_element(By.XPATH, '//*[@id="PopupSignupForm_0"]/div[2]/div[1]')
+            if not close:
+                # element1 = SportsOracles().SpotracBackup2(str, team)
+                element1 = "N/A"
+            else:
+                close.click()
+                link = driver.find_elements(By.ClassName, "playerValue")
+                if not link:
+                    # element1 = SportsOracles().SpotracBackup2(str, team)
+                    element1 = "N/A"
+                else:
+                    link = driver.find_elements(By.ClassName, "playerValue").click()
+                    element1 = link.text
+        else:
             link = driver.find_elements(By.ClassName, "playerValue").click()
             element1 = link.text
-        except:
-            element1 = SportsOracles().SpotracBackup2(str, team)
         print("Second: " + element1)
         return element1
     def SpotracBackup(self, str, team):
@@ -216,20 +210,20 @@ class SportsOracles():
         element1.send_keys(search)
         element1.send_keys(Keys.RETURN)
         print("3")
-        link = driver.find_elements(By.CSS_SELECTOR, ".AZCkJd.Z0LcW.d2J77b.t2b5Cf > .IZ6rdc")
+        link = driver.find_elements(By.CSS_SELECTOR, ".AZCkJd.Z0LcW.d2J77b.t2b5Cf > .IZ6rdc") #if google search has a number at the top rather than a link
         if not link:
-            # element1 = SportsOracles().SpotracBackup1(str, team)
-            element1 = "N/A"
+            element1 = SportsOracles().SpotracBackup1(str, team)
+            # element1 = "N/A"
         else:
             element1 = link[0].text
-            if not any(c.isdigit() for c in element1):
-                link2 = driver.find_elements(By.CSS_SELECTOR, ".V3FYCf b")
+            if not any(c.isdigit() for c in element1): #sometimes the selector still returns a value with nothing in it
+                link2 = driver.find_elements(By.CSS_SELECTOR, ".V3FYCf b") #if google search has a paragraph at the top
                 if not link2:
-                    element1 = "N/A"
+                    element1 = SportsOracles().SpotracBackup1(str, team)
+                    # element1 = "N/A"
                 else:
                     element1 = link2[0].text
                     words = element1.split()
-
                         # Initialize a variable to store the index of the word "average"
                     average_index = None
                     try:
@@ -238,10 +232,8 @@ class SportsOracles():
                             if word.lower() == "average":
                                 average_index = i
                                 break
-
                         # Initialize a variable to store the dollar amount
                         dollar_amount = None
-
                         # Iterate through the words after the word "average"
                         for i in range(average_index + 1, len(words)):
                             # Check if the word starts with a "$"
@@ -255,7 +247,8 @@ class SportsOracles():
                         print(element1)
                     except:
                         print("bug")
-                        element1 = "N/A"
+                        # element1 = "N/A"
+                        element1 = SportsOracles().SpotracBackup1(str, team)
                 # element1 = SportsOracles().SpotracBackup1(str, team)
         print("First: " + element1)
         return element1
@@ -278,15 +271,16 @@ class SportsOracles():
     #         print("1 failed")
     #         salary = SportsOracles().SpotracBackup(str, team)
     #     return salary
+
+    #Alternative Average salary perhaps CSS: table:nth-of-type(1)  tr > td:nth-of-type(3) > .playerValue
+    #could check overthecap
     def SpotracList(self, website):
         result = requests.get(website) #website being scraped
         print(result.status_code)
         # print(result.headers)
         src = result.content
         soup = BeautifulSoup(src, 'lxml')
-
         salaries = [] #array of salaries which is what is being searched below
-
         for td_tag in soup.find_all('td'): # I've seen simpler versions of this but I couldn't get them to work for the data I needed
             span_tag = td_tag.find('span')
             try:
@@ -294,7 +288,6 @@ class SportsOracles():
                     temp = str(span_tag)
                     temp2 = temp.translate ({ord(c): "" for c in ' !@#%^&*()[]{};:./<>?\|`~-=_+classeminfotitlespanvoidVFrhRLT"'}) #getting rid of all the unnecessary characters
                     salaries.append(temp2)
-
             except:
                 pass
         names = []
@@ -307,14 +300,12 @@ class SportsOracles():
                     temp3 = temp2.replace('a classteam-name hrefhttpswwwspotraccomredirectplayer styleline-height px','') #gets rid of strings
                     temp3 = temp3[:-1] #gets rid of an extra character always attached to the end of the name
                     names.append(temp3)
-
             except:
                 pass
         print(names)
         print(salaries)
         return names, salaries
     def PFR(self, str, team):
-
         driver = webdriver.Chrome('./chromedriver')
         url = 'https://www.google.com/'
         driver.get(url)
@@ -322,22 +313,51 @@ class SportsOracles():
         search = "PFR " + str + " " + team
         element1.send_keys(search)
         element1.send_keys(Keys.RETURN)
-        link = driver.find_elements(By.CSS_SELECTOR, "div#rso > div:nth-of-type(1) > .Ww4FFb.g.tF2Cxc.vt6azd  .UK95Uc.Z26q7c.jGGQ5e .DKV0Md.LC20lb.MBeuO")
+        link = driver.find_element(By.CSS_SELECTOR, ".DKV0Md.LC20lb.MBeuO")
+        bruh = link.text
+        print(bruh)
         if not link:
             element6 = "N/A"
+            print("Link doesn't work")
         else:
-            element2 = driver.find_element(By.CSS_SELECTOR, "div#rso > div:nth-of-type(1) > .Ww4FFb.g.tF2Cxc.vt6azd  .UK95Uc.Z26q7c.jGGQ5e .DKV0Md.LC20lb.MBeuO").click()
+            element2 = driver.find_element(By.CSS_SELECTOR, ".DKV0Md.LC20lb.MBeuO")
+            if element2.is_displayed() and element2.is_enabled():
+                try:
+                    element2.click()
+                except:
+                    element6 = "N/A"
+            else:
+                element6 = "N/A"
+                print("Element Not Displayed?")
             driver.maximize_window()
             try:
                 PFROvrLink = driver.find_elements(By.CSS_SELECTOR, '[data-stat="av"]')
                 length = len(PFROvrLink)
+                # for element in PFFOvrLink:
+                #     print(element.text)
+                teams = driver.find_elements(By.CSS_SELECTOR, '[data-stat="team"]')
+                unique_teams = set()
+                for element in teams:
+                    team_name = element.text
+                    print(team_name)
+                    if team_name not in unique_teams:
+                        if team_name.isalpha() and team_name.upper() == team_name:
+                            unique_teams.add(team_name)
+                count = len(unique_teams)
+                print("Count: ", count)
+                length1 = length - count
+                print("Length: ", length)
                 try:
                     element6 = PFROvrLink[length-2].text
+                    if count > 1:
+
+                        element6 = PFROvrLink[length1-2].text
                 except:
                     element6 = "N/A"
+                    print("Improper Length")
             except NoSuchElementException:
                 element6 = "N/A"
-        # print(element6)
+        print("This is the return: ", element6)
         return element6
     def PositionsSal(self, str):
         str1 = str.replace(" ", "")
@@ -429,6 +449,7 @@ class SportsOracles():
         ARISpotracPlayers = []
         ARISpotracSalaries = []
         ARIPFRRatings = []
+        # ARISalaries = []
         for temp in SportsOracles().names(teamSite):
             print(temp)
             time1 = time.perf_counter()
@@ -447,14 +468,17 @@ class SportsOracles():
             ARIPlayerAge.append(age) #blank when testing others
             # ARIPFFRatings.append("0") #use when testing others
             # ARIPlayerAge.append("0") #use when testing others
-            ARIPFRRatings.append(PFRoverall)
+            # ARISpotracPlayers.append("0")#use when testing others
+            # ARISpotracSalaries.append("0")#use when testing others
+            ARIPFRRatings.append(PFRoverall) #blank when using others
         ARISpotracPlayers, ARISpotracSalaries = SportsOracles().SpotracList(teamSpot) #blank when testing others
         ARISalaries = [0 for i in range(len(ARIPlayers))]
         counter1 = 0
         for temp3 in ARISpotracPlayers:
             counter2 = 0
+            # trans1 = temp3.translate ({ord(c): "" for c in ",:.`'1234567890-"})
+            # trans2 = temp3.translate ({ord(c): " " for c in ",:.`'1234567890-"})
             trans3 = temp3.translate ({ord(c): "" for c in ",:.`'1234567890-"}).translate ({ord(c): "" for c in " "}).replace("Jr", "").replace("II", "").replace("III", "").replace("IV", "").lower()
-
             for temp5 in range(len(ARIPlayers)):
                 temp6 = ARIPlayers[counter2]
                 transMad1 = temp6.translate ({ord(c): "" for c in ",:.`'1234567890-"}).translate ({ord(c): "" for c in " "}).replace("Jr", "").replace("II", "").replace("III", "").replace("IV", "").lower()
@@ -563,7 +587,6 @@ def main():
     teamSpot31 = "https://www.spotrac.com/nfl/rankings/average/tennessee-titans/"
     team32 = "https://www.maddenratings.com/teams/washington-commanders"
     teamSpot32 = "https://www.spotrac.com/nfl/rankings/average/washington-commanders/"
-
     ARI = "ARI"
     ATL = 'ATL'
     BAL = 'BAL'
@@ -596,38 +619,37 @@ def main():
     TB = 'TB'
     TEN = 'TEN'
     WAS = 'WAS'
-    SportsOracles.RunLoops(team1, teamSpot1, ARI)
-    SportsOracles.RunLoops(team2, teamSpot2, ATL)
-    SportsOracles.RunLoops(team3, teamSpot3, BAL)
-    SportsOracles.RunLoops(team4, teamSpot4, BUF)
-    SportsOracles.RunLoops(team5, teamSpot5, CAR)
-    SportsOracles.RunLoops(team6, teamSpot6, CHI)
-    SportsOracles.RunLoops(team7, teamSpot7, CIN)
-    SportsOracles.RunLoops(team8, teamSpot8, CLE)
-    SportsOracles.RunLoops(team9, teamSpot9, DAL)
-    SportsOracles.RunLoops(team10, teamSpot10, DEN)
-    SportsOracles.RunLoops(team11, teamSpot11, DET)
-    SportsOracles.RunLoops(team12, teamSpot12, GB)
-    SportsOracles.RunLoops(team13, teamSpot13, HOU)
-    SportsOracles.RunLoops(team14, teamSpot14, IND)
-    SportsOracles.RunLoops(team15, teamSpot15, JAC)
-    SportsOracles.RunLoops(team16, teamSpot16, KC)
-    SportsOracles.RunLoops(team17, teamSpot17, LV)
-    SportsOracles.RunLoops(team18, teamSpot18, LAC)
-    SportsOracles.RunLoops(team19, teamSpot19, LAR)
-    SportsOracles.RunLoops(team20, teamSpot20, MIA)
-    SportsOracles.RunLoops(team21, teamSpot21, MIN)
-    SportsOracles.RunLoops(team22, teamSpot22, NE)
-    SportsOracles.RunLoops(team23, teamSpot23, NO)
-    SportsOracles.RunLoops(team24, teamSpot24, NYG)
-    SportsOracles.RunLoops(team25, teamSpot25, NYJ)
-    SportsOracles.RunLoops(team26, teamSpot26, PHI)
-    SportsOracles.RunLoops(team27, teamSpot27, PIT)
-    SportsOracles.RunLoops(team28, teamSpot28, SF)
-    SportsOracles.RunLoops(team29, teamSpot29, SEA)
-    SportsOracles.RunLoops(team30, teamSpot30, TB)
-    SportsOracles.RunLoops(team31, teamSpot31, TEN)
-    SportsOracles.RunLoops(team32, teamSpot32, WAS)
-
+    # SportsOracles.RunLoops(team1, teamSpot1, ARI)
+    # SportsOracles.RunLoops(team2, teamSpot2, ATL)
+    # SportsOracles.RunLoops(team3, teamSpot3, BAL)
+    # SportsOracles.RunLoops(team4, teamSpot4, BUF)
+    # SportsOracles.RunLoops(team5, teamSpot5, CAR)
+    # SportsOracles.RunLoops(team6, teamSpot6, CHI)
+    # SportsOracles.RunLoops(team7, teamSpot7, CIN)
+    # SportsOracles.RunLoops(team8, teamSpot8, CLE)
+    # SportsOracles.RunLoops(team9, teamSpot9, DAL)
+    # SportsOracles.RunLoops(team10, teamSpot10, DEN)
+    # SportsOracles.RunLoops(team11, teamSpot11, DET)
+    # SportsOracles.RunLoops(team12, teamSpot12, GB)
+    # SportsOracles.RunLoops(team13, teamSpot13, HOU)
+    # SportsOracles.RunLoops(team14, teamSpot14, IND)
+    # SportsOracles.RunLoops(team15, teamSpot15, JAC)
+    # SportsOracles.RunLoops(team16, teamSpot16, KC)
+    # SportsOracles.RunLoops(team17, teamSpot17, LV)
+    # SportsOracles.RunLoops(team18, teamSpot18, LAC)
+    # SportsOracles.RunLoops(team19, teamSpot19, LAR)
+    # SportsOracles.RunLoops(team20, teamSpot20, MIA)
+    # SportsOracles.RunLoops(team21, teamSpot21, MIN)
+    # SportsOracles.RunLoops(team22, teamSpot22, NE)
+    # SportsOracles.RunLoops(team23, teamSpot23, NO)
+    # SportsOracles.RunLoops(team24, teamSpot24, NYG)
+    # SportsOracles.RunLoops(team25, teamSpot25, NYJ)
+    # SportsOracles.RunLoops(team26, teamSpot26, PHI)
+    # SportsOracles.RunLoops(team27, teamSpot27, PIT)
+    # SportsOracles.RunLoops(team28, teamSpot28, SF)
+    # SportsOracles.RunLoops(team29, teamSpot29, SEA)
+    # SportsOracles.RunLoops(team30, teamSpot30, TB)
+    # SportsOracles.RunLoops(team31, teamSpot31, TEN)
+    # SportsOracles.RunLoops(team32, teamSpot32, WAS)
 if __name__ == "__main__":
     main()
